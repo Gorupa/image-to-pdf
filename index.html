@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF — Privacy-First, Open Source</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Badge Strip -->
+    <div class="badge-strip">
+        <span class="pill pill-oss"><span class="material-icons-round">code</span> Open Source</span>
+        <span class="pill pill-mit"><span class="material-icons-round">gavel</span> MIT License</span>
+        <span class="pill pill-adfree"><span class="material-icons-round">block</span> Ad-Free</span>
+        <span class="pill pill-local"><span class="material-icons-round">lock</span> 100% Local</span>
+    </div>
+
+    <main class="container">
+        <div class="header">
+            <div class="hero-icon-wrap">
+                <span class="material-icons-round hero-icon">picture_as_pdf</span>
+            </div>
+            <h1>Image to PDF</h1>
+            <p>Convert JPG &amp; PNG images into a PDF — instantly, privately, in your browser.</p>
+            <a class="tool-link" href="https://local-image-compressor.pages.dev/" target="_blank" rel="noopener">
+                <span class="material-icons-round">compress</span>
+                Also try: Image Compressor
+            </a>
+        </div>
+
+        <div class="card">
+
+            <!-- Step 1: Upload -->
+            <div id="uploadZone" class="upload-zone">
+                <span class="material-icons-round">add_photo_alternate</span>
+                <h3>Drop images or click to browse</h3>
+                <p>Add multiple images — they appear in the order they go into the PDF</p>
+                <div class="format-tags">
+                    <span class="format-tag">JPG</span>
+                    <span class="format-tag">PNG</span>
+                    <span class="format-tag">WEBP</span>
+                </div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple hidden>
+            </div>
+
+            <!-- Step 2: Queue & Options -->
+            <div id="queuePanel" class="queue-panel hidden">
+
+                <div class="queue-header">
+                    <span class="queue-title">
+                        <span class="material-icons-round">photo_library</span>
+                        Images
+                        <span class="queue-count" id="queueCount">0</span>
+                    </span>
+                    <button class="add-more-btn" id="addMoreBtn">
+                        <span class="material-icons-round">add</span> Add more
+                    </button>
+                    <input type="file" id="addMoreInput" accept="image/jpeg,image/png,image/webp" multiple hidden>
+                </div>
+
+                <div class="image-list" id="imageList"></div>
+
+                <!-- Options -->
+                <div class="options-row">
+                    <div class="option-group">
+                        <div class="option-label">Page Size</div>
+                        <div class="option-buttons">
+                            <button class="opt-btn active" data-page="a4">A4</button>
+                            <button class="opt-btn" data-page="letter">Letter</button>
+                            <button class="opt-btn" data-page="fit">Fit Image</button>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <div class="option-label">Orientation</div>
+                        <div class="option-buttons">
+                            <button class="opt-btn active" data-orient="portrait">Portrait</button>
+                            <button class="opt-btn" data-orient="landscape">Landscape</button>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <div class="option-label">Margin</div>
+                        <div class="option-buttons">
+                            <button class="opt-btn" data-margin="0">None</button>
+                            <button class="opt-btn active" data-margin="10">Small</button>
+                            <button class="opt-btn" data-margin="20">Large</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" id="convertBtn">
+                    <span class="material-icons-round">picture_as_pdf</span>
+                    Convert to PDF
+                </button>
+
+                <div class="progress-bar-wrap" id="progressWrap">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-label" id="progressLabel">Processing image 1 of 1…</div>
+            </div>
+
+            <!-- Step 3: Result -->
+            <div id="resultsPanel" class="results hidden">
+                <div class="success-box">
+                    <div class="success-icon-wrap">
+                        <span class="material-icons-round success-icon">picture_as_pdf</span>
+                    </div>
+                    <h3>PDF Ready!</h3>
+                    <p class="sub">Your PDF has been created — no data was sent anywhere.</p>
+
+                    <div class="result-stats">
+                        <div class="stat-box">
+                            <span class="stat-label">Images</span>
+                            <span class="stat-value" id="resultImages">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Pages</span>
+                            <span class="stat-value" id="resultPages">0</span>
+                        </div>
+                        <div class="stat-box highlight">
+                            <span class="stat-label">PDF Size</span>
+                            <span class="stat-value" id="resultSize">0 KB</span>
+                        </div>
+                    </div>
+
+                    <a href="#" class="download-btn" id="downloadLink">
+                        <span class="material-icons-round">download</span> Download PDF
+                    </a>
+                    <button class="btn-text" id="resetBtn">↩ Convert another batch</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>
+            Built with ❤️ using HTML, CSS, JavaScript &amp; jsPDF
+            <span class="sep">·</span>
+            <a href="https://github.com/gorupa/image-to-pdf" target="_blank" rel="noopener">
+                <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
+                gorupa / image-to-pdf
+            </a>
+        </div>
+        <div>
+            Released under the
+            <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>
+            <span class="sep">·</span>
+            No ads · No tracking · No server uploads
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
